@@ -1,18 +1,23 @@
 // [RFC 6902: JavaScript Object Notation (JSON) Patch](https://datatracker.ietf.org/doc/html/rfc6902/#section-3)
-import {json_ptr} from './json_ptr.js'
+import {json_ptr_cache} from './json_ptr.js'
 
 export function json_patch(operations, json_obj) {
-  return (this || _json_patch_).patch(operations, json_obj)
-}
+  return (this || _json_patch_.use())
+    .patch(operations, json_obj) }
+
 export default json_patch
 
 
-export const _json_patch_ = {
-  as_op: op => structuredClone(op),
-  json_ptr,
+export const json_patch_cache = arg =>
+  _json_patch_.use(arg)
 
-  bind(json_ptr_ = json_ptr.bind()) {
-    json_patch.bind({__proto__: this, json_ptr_}) },
+export const _json_patch_ = /* #__PURE__ */ {
+  as_op: op => structuredClone(op),
+
+  use(json_ptr) {
+    if (!json_ptr?.call)
+      json_ptr = json_ptr_cache(json_ptr)
+    return { __proto__: this, json_ptr} },
 
   patch(operations, json_obj) {
     for (let [op, res] of this.iter_patch(operations, json_obj))
@@ -64,12 +69,12 @@ export const _json_patch_ = {
 
   $test({path, value}, json_obj) {
     let src_value = this.json_ptr(path).ptr_get(json_obj)
-    if (!test_equal(src_value, value))
+    if (!deep_equal(src_value, value))
       throw new Error('json_patch test fail')
     return json_obj },
 }
 
-export function test_equal(a, b) {
+export function deep_equal(a, b) {
   let ta=typeof a, tb=typeof b
   if (null==a || null==b || 'object'!==ta || 'object'!==tb)
     return ta===tb && a==b
@@ -78,7 +83,7 @@ export function test_equal(a, b) {
     let len = Array.isArray(b) ? b.length : null
     let i=0, ans = (len == a.length)
     for (;ans && i<len;i++)
-      ans = test_equal(a[i], b[i])
+      ans = deep_equal(a[i], b[i])
     return ans
 
   } else { // object equal
@@ -86,7 +91,7 @@ export function test_equal(a, b) {
     b = new Map(Object.entries(b))
     let ans = a.length == b.size
     for ([k,v] of a)
-      if (!(ans &&= test_equal(v, b.get(k))))
+      if (!(ans &&= deep_equal(v, b.get(k))))
         break
 
     return ans

@@ -22,7 +22,10 @@ export const json_ptr_add = (ptr_path, tgt, value) => json_ptr(ptr_path).ptr_add
 export const json_ptr_remove = (ptr_path, tgt, value) => json_ptr(ptr_path).ptr_remove(tgt)
 
 
-export const _json_ptr_ = {
+export const json_ptr_cache = cache =>
+  _json_ptr_.bind(cache)
+
+export const _json_ptr_ = /* #__PURE__ */ {
   [Symbol.toStringTag]: 'json_ptr',
   [Symbol.toPrimitive]() { return this.ptr_path },
 
