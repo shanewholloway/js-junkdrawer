@@ -1,0 +1,31 @@
+{
+  "name": "@shanewholloway/junkdrawer",
+  "version": "0.0.0",
+  "description": "Collection of JavaScript sketches and partial ideas",
+  "license": "BSD-2-Clause",
+  "author": "Shane Holloway <shane.holloway@ieee.org>",
+  "homepage": "https://github.com/shanewholloway/js-junkdrawer#readme",
+  "bugs": {
+    "url": "https://github.com/shanewholloway/js-junkdrawer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/shanewholloway/js-junkdrawer.git"
+  },
+  "files": [
+    "code/",
+    "esm/",
+    "umd/"
+  ],
+  "type": "module",
+  "exports": {
+    "./*": "./*"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test:watch": "node --test --watch ",
+    "test:only": "node --test --test-only --watch ",
+    "test": "node --test"
+  }
+}
