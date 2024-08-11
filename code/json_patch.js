@@ -32,6 +32,8 @@ export const _json_patch_ = /* #__PURE__ */ {
       yield [patch_op, res]
 
       res = this['$'+patch_op.op]?.(patch_op, res)
+      if (undefined === res)
+        throw new Error('patch invalid')
     }
     yield [null, res]
   },
