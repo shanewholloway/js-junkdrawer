@@ -2,7 +2,7 @@
   "name": "@shanewholloway/junkdrawer",
   "version": "0.0.0",
   "description": "Collection of JavaScript sketches and partial ideas",
-  "license": "BSD-2-Clause",
+  "license": "MIT-0",
   "author": "Shane Holloway <shane.holloway@ieee.org>",
   "homepage": "https://github.com/shanewholloway/js-junkdrawer#readme",
   "bugs": {
