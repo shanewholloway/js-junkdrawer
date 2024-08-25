@@ -94,20 +94,33 @@ export const _json_ptr_ = /* #__PURE__ */ {
 const _rx_json_ptr = /(\/|~0|~1)/
 
 // JSON Pointer parser as a right-reduce implementation
-const _rrinl_json_ptr = (_,sz,i,path) => (
-    (i&1) // odd indexes are split chars from _rx_json_ptr
-      ? ('/' === sz ? path.splice(i,1) // remove '/' from array
-        : path[i-1] += ('~1'===sz ? '/':'~') + path.splice(i,2)[1] ) // replace escape char and combine 3 slots
-      : path[i] = !sz || isNaN(sz) ? sz : Number(sz), // parse numbers
-    path
-  )
+function _rr_json_ptr(_,sz,i,path) {
+  if (i&1) {
+    // odd indexes are split chars from _rx_json_ptr
+    if ('/' === sz) {
+      path.splice(i,1) // remove '/' from array
+    } else {
+      // sz is an escape sequence; replace escape char and combine 3 slots
+      path[i-1] += ('~1'===sz ? '/':'~') + path.splice(i,2)[1]
+    }
+  } else {
+    // even indexes are the JSON object path keys
+    if (sz && !isNaN(sz)) {
+      path[i] = Number(sz) // parse numbers
+    }
+  }
+  return path
+}
 
-export function decode_ptr(ptr) {
+export function split_ptr(ptr) {
   if ('/'!==ptr[0])
       throw new Error("Invalid JSON Pointer")
 
-  var path = ptr.split(_rx_json_ptr)
-    .reduceRight(_rrinl_json_ptr, 0)
+  return ptr.split(_rx_json_ptr)
+    .reduceRight(_rr_json_ptr, 0)
+}
+export function decode_ptr(ptr) {
+  let path = split_ptr(ptr)
   path.shift() // skip initial blank
   return {__proto__: this, ptr, path, key: path.pop()}
 }
