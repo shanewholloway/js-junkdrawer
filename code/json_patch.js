@@ -48,7 +48,7 @@ export const _json_patch_ = /* #__PURE__ */ {
     return json_obj },
 
   $replace({path, value}, json_obj) {
-    let [tgt,key] = this.json_ptr(path).ptr_of(json_obj)
+    let [,tgt,key] = this.json_ptr(path).ptr_of(json_obj)
     if (undefined === tgt[key])
       throw new Error('path target[key] is undefined')
 

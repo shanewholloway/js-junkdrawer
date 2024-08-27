@@ -220,8 +220,15 @@ describe('json_ptr operations', () => {
     assert.strictEqual(json_ptr_get('/foo/1', obj), 2)
 
     assert.deepStrictEqual(
+      json_ptr_of('/foo/1', obj),
+      [undefined, [ "a", 2, "c" ], 1] )
+
+    assert.deepStrictEqual(
       json_ptr_of('/foo/1', obj, true),
       [undefined, [ "a", 2, "c" ], 1] )
+
+    assert.throws(
+      () => json_ptr_of('/foo/broken', obj))
 
     assert.deepStrictEqual(
       json_ptr_of('/foo/broken', obj, true),

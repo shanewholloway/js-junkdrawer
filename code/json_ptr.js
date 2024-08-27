@@ -15,7 +15,7 @@ export function json_ptr(ptr_path, ...fmt_values) {
 
 export default json_ptr
 export const json_ptr_of = (ptr_path, tgt, no_throw) => json_ptr(ptr_path).ptr_of(tgt, no_throw)
-export const json_ptr_get = (ptr_path, tgt) => json_ptr(ptr_path).ptr_get(tgt)
+export const json_ptr_get = (ptr_path, tgt, no_throw) => json_ptr(ptr_path).ptr_get(tgt, no_throw)
 export const json_ptr_set = (ptr_path, tgt, value) => json_ptr(ptr_path).ptr_set(tgt, value)
 export const json_ptr_delete = (ptr_path, tgt) => json_ptr(ptr_path).ptr_delete(tgt)
 export const json_ptr_add = (ptr_path, tgt, value) => json_ptr(ptr_path).ptr_add(tgt, value)
@@ -32,25 +32,25 @@ export const _json_ptr_ = /* #__PURE__ */ {
   bind(cache=new Map()) {
     return json_ptr.bind({__proto__: this, cache}) },
 
-  ptr_get(json_obj) {
-    let [tgt, key] = this.ptr_of(json_obj)
-    return tgt[key]
+  ptr_get(json_obj, no_throw) {
+    let [err, tgt, key] = this.ptr_of(json_obj, no_throw)
+    if (!err) return tgt[key]
   },
 
   ptr_set(json_obj, value) {
-    let [tgt, key] = this.ptr_of(json_obj), res=tgt[key]
+    let [, tgt, key] = this.ptr_of(json_obj), res=tgt[key]
     tgt[key] = value
     return res
   },
 
   ptr_delete(json_obj) {
-    let [tgt, key] = this.ptr_of(json_obj), res=tgt[key]
+    let [, tgt, key] = this.ptr_of(json_obj), res=tgt[key]
     delete tgt[key]
     return res
   },
 
   ptr_add(json_obj, value) {
-    let [tgt, key] = this.ptr_of(json_obj)
+    let [, tgt, key] = this.ptr_of(json_obj)
     if (Array.isArray(tgt))
       tgt.splice(key, 0, value)
     else tgt[key] = value
@@ -58,7 +58,7 @@ export const _json_ptr_ = /* #__PURE__ */ {
   },
 
   ptr_remove(json_obj) {
-    let [tgt, key] = this.ptr_of(json_obj), res
+    let [, tgt, key] = this.ptr_of(json_obj), res
     if (Array.isArray(tgt))
       res = '-' === this.key
         ? tgt.pop()
@@ -84,9 +84,8 @@ export const _json_ptr_ = /* #__PURE__ */ {
       : isNaN(key) ? err = `json_ptr target invalid index`
       : 0;
 
-    if (no_throw) return [err, tgt, key]
-    if (err) throw new Error(err)
-    return [tgt, key]
+    if (err && !no_throw) throw new Error(err)
+    return [err, tgt, key]
   },
 }
 
