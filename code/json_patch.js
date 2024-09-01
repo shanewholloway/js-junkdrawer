@@ -1,5 +1,6 @@
 // [RFC 6902: JavaScript Object Notation (JSON) Patch](https://datatracker.ietf.org/doc/html/rfc6902/#section-3)
 import {json_ptr_cache} from './json_ptr.js'
+import {json_equal} from './json_equal.js'
 
 export function json_patch(operations, json_obj) {
   return (this || _json_patch_.use())
@@ -71,32 +72,8 @@ export const _json_patch_ = /* #__PURE__ */ {
 
   $test({path, value}, json_obj) {
     let src_value = this.json_ptr(path).ptr_get(json_obj)
-    if (!deep_equal(src_value, value))
+    if (!json_equal(src_value, value))
       throw new Error('json_patch test fail')
     return json_obj },
-}
-
-export function deep_equal(a, b) {
-  let ta=typeof a, tb=typeof b
-  if (null==a || null==b || 'object'!==ta || 'object'!==tb)
-    return ta===tb && a==b
-
-  if (Array.isArray(a)) { // array equal
-    let len = Array.isArray(b) ? b.length : null
-    let i=0, ans = (len == a.length)
-    for (;ans && i<len;i++)
-      ans = deep_equal(a[i], b[i])
-    return ans
-
-  } else { // object equal
-    a = Object.entries(a)
-    b = new Map(Object.entries(b))
-    let ans = a.length == b.size
-    for ([k,v] of a)
-      if (!(ans &&= deep_equal(v, b.get(k))))
-        break
-
-    return ans
-  }
 }
 
