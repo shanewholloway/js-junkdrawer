@@ -43,9 +43,10 @@ export const _json_ptr_ = /* #__PURE__ */ {
     return res
   },
 
-  ptr_delete(json_obj) {
-    let [, tgt, key] = this.ptr_of(json_obj), res=tgt[key]
-    delete tgt[key]
+  ptr_delete(json_obj, no_throw) {
+    let [, tgt, key] = this.ptr_of(json_obj, no_throw), res=tgt?.[key]
+    if (null != tgt)
+      delete tgt[key]
     return res
   },
 
