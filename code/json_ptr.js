@@ -15,6 +15,7 @@ export function json_ptr(ptr_path, ...fmt_values) {
 
 export default json_ptr
 export const json_ptr_of = (ptr_path, tgt, no_throw) => json_ptr(ptr_path).ptr_of(tgt, no_throw)
+export const json_ptr_has = (ptr_path, tgt, no_throw) => json_ptr(ptr_path).ptr_has(tgt, no_throw)
 export const json_ptr_get = (ptr_path, tgt, no_throw) => json_ptr(ptr_path).ptr_get(tgt, no_throw)
 export const json_ptr_set = (ptr_path, tgt, value) => json_ptr(ptr_path).ptr_set(tgt, value)
 export const json_ptr_delete = (ptr_path, tgt) => json_ptr(ptr_path).ptr_delete(tgt)
@@ -31,6 +32,11 @@ export const _json_ptr_ = {
 
   bind(cache=new Map()) {
     return json_ptr.bind({__proto__: this, cache}) },
+
+  ptr_has(json_obj, no_throw) {
+    let [err, tgt, key] = this.ptr_of(json_obj, no_throw)
+    if (!err) return (null !== tgt && 'object' === typeof tgt) ? key in tgt : false
+  },
 
   ptr_get(json_obj, no_throw) {
     let [err, tgt, key] = this.ptr_of(json_obj, no_throw)

@@ -1,5 +1,5 @@
 import {json_ptr, decode_ptr, encode_ptr, _json_ptr_} from './json_ptr.js'
-import {json_ptr_of, json_ptr_get, json_ptr_set, json_ptr_delete, json_ptr_add, json_ptr_remove} from './json_ptr.js'
+import {json_ptr_of, json_ptr_has, json_ptr_get, json_ptr_set, json_ptr_delete, json_ptr_add, json_ptr_remove} from './json_ptr.js'
 
 import {describe, test} from 'node:test'
 import * as assert from 'node:assert'
@@ -18,6 +18,7 @@ describe('json_ptr API', () => {
     assert.strictEqual(typeof _json_ptr_, 'object')
     assert.strictEqual(typeof _json_ptr_.bind, 'function')
     // assert.strictEqual(typeof _json_ptr_.cache, 'object')
+    assert.strictEqual(typeof _json_ptr_.ptr_has, 'function')
     assert.strictEqual(typeof _json_ptr_.ptr_get, 'function')
     assert.strictEqual(typeof _json_ptr_.ptr_set, 'function')
     assert.strictEqual(typeof _json_ptr_.ptr_delete, 'function')
@@ -26,6 +27,8 @@ describe('json_ptr API', () => {
 
   test('json_ptr_of function', () =>
     assert.strictEqual(typeof json_ptr_of, 'function'))
+  test('json_ptr_has function', () =>
+    assert.strictEqual(typeof json_ptr_has, 'function'))
   test('json_ptr_get function', () =>
     assert.strictEqual(typeof json_ptr_get, 'function'))
   test('json_ptr_set function', () =>
@@ -86,6 +89,7 @@ describe('JSON Pointer parsing', () => {
         assert.deepStrictEqual(res.path, ptr_obj.path)
         assert.strictEqual(res.key, ptr_obj.key)
 
+        assert.strictEqual(typeof res.ptr_has, 'function')
         assert.strictEqual(typeof res.ptr_get, 'function')
         assert.strictEqual(typeof res.ptr_set, 'function')
         assert.strictEqual(typeof res.ptr_delete, 'function')
@@ -99,6 +103,7 @@ describe('JSON Pointer parsing', () => {
         assert.deepStrictEqual(res.path, ptr_obj.path)
         assert.strictEqual(res.key, ptr_obj.key)
 
+        assert.strictEqual(typeof res.ptr_has, 'function')
         assert.strictEqual(typeof res.ptr_get, 'function')
         assert.strictEqual(typeof res.ptr_set, 'function')
         assert.strictEqual(typeof res.ptr_delete, 'function')
@@ -218,6 +223,9 @@ describe('json_ptr operations', () => {
     let obj = { "baz": "qux", "foo": [ "a", 2, "c" ] }
     assert.strictEqual(json_ptr_get('/baz', obj), 'qux')
     assert.strictEqual(json_ptr_get('/foo/1', obj), 2)
+    assert.strictEqual(json_ptr_has('/baz', obj), true)
+    assert.strictEqual(json_ptr_has('/foo/1', obj), true)
+    assert.strictEqual(json_ptr_has('/bar', obj), false)
 
     assert.deepStrictEqual(
       json_ptr_of('/foo/1', obj),
