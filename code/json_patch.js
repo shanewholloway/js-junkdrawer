@@ -12,7 +12,7 @@ export default json_patch
 export const json_patch_cache = arg =>
   _json_patch_.use(arg)
 
-export const _json_patch_ = /* #__PURE__ */ {
+export const _json_patch_ = {
   as_op: op => structuredClone(op),
 
   use(json_ptr) {

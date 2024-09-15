@@ -21,9 +21,13 @@
   "exports": {
     "./*": "./*"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.21.3"
+  },
   "scripts": {
+    "build": "rollup --config",
+    "build:watch": "rollup --config --watch",
     "test:watch": "node --test --watch ",
     "test:only": "node --test --test-only --watch ",
     "test": "node --test"

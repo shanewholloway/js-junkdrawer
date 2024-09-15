@@ -25,7 +25,7 @@ export const json_ptr_remove = (ptr_path, tgt, value) => json_ptr(ptr_path).ptr_
 export const json_ptr_cache = cache =>
   _json_ptr_.bind(cache)
 
-export const _json_ptr_ = /* #__PURE__ */ {
+export const _json_ptr_ = {
   [Symbol.toStringTag]: 'json_ptr',
   [Symbol.toPrimitive]() { return this.ptr_path },
 
